@@ -205,6 +205,12 @@ python -m unittest discover -s app/tests
 - **Async tasks**: Celery + Redis to simulate scalable async processing.  
 - **Testing**: mix of pytest and unittest to balance modern async testing with traditional familiarity.  
 - **AI**: mocked service keeps setup simple and reproducible, but is pluggable for future Hugging Face/OpenAI backends.  
+- **Multi-tenancy design choice**:  
+  In this implementation, tenant isolation is achieved by scoping all tables with a `company_id` column.  
+  For production systems requiring stricter isolation, one could adopt either:
+    - Schema-per-tenant (separate schemas in the same DB)  
+    - Database-per-tenant (physically separate databases)  
+  We use the `company_id` scoping approach here for simplicity and faster iteration. It is pragmatic for this coding challenge while still demonstrating the principle of multi-tenancy.
 
 ---
 
