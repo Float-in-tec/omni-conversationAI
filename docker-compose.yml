@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   db:
     image: mysql:8.0
@@ -7,9 +8,45 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: sailer
-      MYSQL_USER: sailer
-      MYSQL_PASSWORD: sailer
+      MYSQL_USER: sailer_user
+      MYSQL_PASSWORD: sailer_pass
     ports:
       - "3306:3306"
     volumes:
+      - db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
+
+  redis:
+    image: redis:6.2
+    container_name: sailer-redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  app:
+    build: .
+    container_name: sailer-app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: "mysql+pymysql://sailer_user:sailer_pass@db:3306/sailer"
+      REDIS_URL: "redis://redis:6379/0"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+  worker:
+    build: .
+    container_name: sailer-worker
+    command: celery -A app.services.tasks worker --loglevel=info
+    depends_on:
+      - redis
+      - db
+    environment:
+      DATABASE_URL: "mysql+pymysql://sailer_user:sailer_pass@db:3306/sailer"
+      REDIS_URL: "redis://redis:6379/0"
+
+volumes:
+  db_data:
