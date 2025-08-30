@@ -16,7 +16,7 @@ The service is built with **FastAPI**, **MySQL**, **SQLAlchemy**, **Celery**, an
 
 ---
 
-## 🏗️ Architecture
+## 🏗️  Design and Architecture choices
 
 This project follows an **MVC-inspired architecture**, consistent with previous projects I’ve worked on:
 
@@ -211,6 +211,19 @@ python -m unittest discover -s app/tests
     - Schema-per-tenant (separate schemas in the same DB)  
     - Database-per-tenant (physically separate databases)  
   We use the `company_id` scoping approach here for simplicity and faster iteration. It is pragmatic for this coding challenge while still demonstrating the principle of multi-tenancy.
+
+
+### Environment Variables & Config
+
+The project follows **12-factor app principles** by loading configuration from environment variables instead of hardcoding them.
+
+Database connection settings are stored in `.env` (already wired into `docker-compose.yml`):
+
+
+This approach ensures:
+- **Security:** no hardcoded credentials in code or compose files.
+- **Flexibility:** different environments (dev, staging, prod) just need a different `.env`.
+- **Scalability:** although we currently use a single DB, the codebase (`DBConn`) is designed to support multiple databases in the future, making a saclable system as requested in the challenge.
 
 ---
 
