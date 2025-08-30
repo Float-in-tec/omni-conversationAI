@@ -1,18 +1,17 @@
-# Use Python 3.11
-FROM python:3.11-slim
+FROM python:3.10-slim
 
-# Defina o diretório de trabalho
+# Set working directory
 WORKDIR /app
 
-# Copie requirements e instale
+# Install dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copie todo o código
+# Copy application code
 COPY . .
 
-# Exponha a porta do FastAPI
+# Expose port
 EXPOSE 8000
 
-# Comando para rodar FastAPI
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run FastAPI with Uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
