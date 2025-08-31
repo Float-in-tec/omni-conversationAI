@@ -1,15 +1,8 @@
-from fastapi import FastAPI, Depends
-from app.db_utils.db_connection import DBConn
+from fastapi import FastAPI
+from app.routers.webhooks import router as webhooks_router
+from app.routers.conversations import router as conversations_router
 
 app = FastAPI(title="omniAI")
 
-@app.on_event("startup")
-def startup_event():
-    # Initialize DBConn on startup to validate DB availability
-    db = DBConn()
-    db.connect()
-    db.disconnect()
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
+app.include_router(webhooks_router)
+app.include_router(conversations_router)

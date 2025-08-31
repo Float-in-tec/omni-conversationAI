@@ -5,8 +5,11 @@ services:
     image: mysql:8.0
     container_name: sailer-db
     restart: always
-    env_file:
-      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sailer}
+      MYSQL_USER: ${MYSQL_USER:-sailer_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sailer_pass}
     ports:
       - "${DB_PORT:-3306}:3306"
     volumes:
@@ -17,8 +20,19 @@ services:
     build: .
     container_name: sailer-api
     restart: always
-    env_file:
-      - .env
+    environment:
+      DB_DRIVER: ${DB_DRIVER:-mysql+pymysql}
+      DB_USER: ${DB_USER:-sailer_user}
+      DB_PASSWORD: ${DB_PASSWORD:-sailer_pass}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-sailer}
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-10}
+      DB_MAX_OVERFLOW: ${DB_MAX_OVERFLOW:-20}
+      DB_POOL_RECYCLE: ${DB_POOL_RECYCLE:-3600}
+      AI_MODE: ${AI_MODE:-mock}
+      SAILER_AI_API_KEY: ${SAILER_AI_API_KEY:-}
+
     ports:
       - "8000:8000"
     depends_on:
