@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bullseye
 
 # Set working directory
 WORKDIR /app
@@ -15,3 +15,7 @@ EXPOSE 8000
 
 # Run FastAPI with Uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+#
+ENV PYTHONPATH=/app
+
