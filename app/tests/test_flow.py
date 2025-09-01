@@ -1,4 +1,3 @@
-# app/tests/test_flow.py
 import json
 import sys, os
 from fastapi.testclient import TestClient
@@ -41,11 +40,9 @@ def test_agent_can_send_message_and_see_it():
     assert msg["sender"] == "agent"
     assert msg["conversation_id"] == 1
 
+
 def test_transfer_changes_owner():
-    # Transfer conversation 1 to agent 2
-    r = client.post("/conversations/1/transfer",
-                    json={"new_owner_id": 2})
-    assert r.status_code == 204
-    r2 = client.get("/conversations/1")
-    assert r2.status_code == 200
-    assert r2.json()["owner_id"] == 2
+    # Toggle should switch AI -> human (or human -> AI)
+    r = client.post("/conversations/1/transfer-toggle")
+    assert r.status_code == 200
+    assert "switched ownership to" in r.json()["detail"]

@@ -94,9 +94,9 @@ INSERT INTO channels (id, company_id, name, type) VALUES
 
 -- Users (AI bots + agents)
 INSERT INTO users (id, company_id, name, role) VALUES
-(1, 1, 'AI Assistant', 'ai-bot'),
+(1, 1, 'AI Assistant', 'ai'),
 (2, 1, 'Alice Agent',  'agent'),
-(3, 2, 'AI Helper',    'ai-bot'),
+(3, 2, 'AI Helper',    'ai'),
 (4, 2, 'Bob Agent',    'agent');
 
 -- Contacts

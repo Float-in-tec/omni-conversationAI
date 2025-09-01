@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, Literal
 
 class ConversationOut(BaseModel):
     id: int
@@ -12,6 +12,3 @@ class ConversationOut(BaseModel):
 class AgentMessageIn(BaseModel):
     author_id: int
     text: str
-
-class TransferIn(BaseModel):
-    new_owner_id: int

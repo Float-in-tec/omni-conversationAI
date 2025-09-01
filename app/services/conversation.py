@@ -35,6 +35,21 @@ def get_or_create_ai_user(db: Session, company_id: int) -> DAOUser:
         db.refresh(bot)
     return bot
 
+def get_or_create_default_agent(db: Session, company_id: int) -> DAOUser:
+    """
+    Returns a default human agent for the company. Creates one if missing.
+    """
+    agent = (db.query(DAOUser)
+              .filter(DAOUser.company_id == company_id, DAOUser.role == "agent")
+              .order_by(DAOUser.id.asc())
+              .first())
+    if not agent:
+        agent = DAOUser(company_id=company_id, name="Default Agent", role="agent")
+        db.add(agent)
+        db.commit()
+        db.refresh(agent)
+    return agent
+
 def get_or_create_contact_by_phone(db: Session, company_id: int, phone: str) -> DAOContact:
     contact = db.query(DAOContact).filter(DAOContact.company_id == company_id, DAOContact.phone == phone).first()
     if not contact:
@@ -78,3 +93,28 @@ def add_ai_autoreply(db: Session, conversation: DAOConversation, inbound_text: s
     db.commit()
     db.refresh(msg)
     return msg
+
+def toggle_conversation_owner(db: Session, conversation: DAOConversation) -> str:
+    """
+    If current owner is AI -> switch to human (auto-create default agent).
+    If current owner is human/agent -> switch to AI.
+    Returns the new role string: "human" or "ai".
+    """
+    # figure out current role
+    cur_role = None
+    if conversation.owner_id:
+        owner = db.query(DAOUser).filter(DAOUser.id == conversation.owner_id).first()
+        cur_role = owner.role if owner else None
+
+    if cur_role == "agent":
+        # switch to AI
+        bot = get_or_create_ai_user(db, conversation.company_id)
+        conversation.owner_id = bot.id
+        db.commit()
+        return "ai"
+    else:
+        # switch to human
+        agent = get_or_create_default_agent(db, conversation.company_id)
+        conversation.owner_id = agent.id
+        db.commit()
+        return "human"
