@@ -76,41 +76,31 @@ CREATE TABLE messages (
 -- ==========================================================
 -- Seed Data (so that API Get methods can be tested instantly by reviewers)
 -- ==========================================================
--- ==========================================================
--- Seed Data (two tenants)
--- ==========================================================
--- Companies
+
 INSERT INTO companies (id, name) VALUES
 (1, 'Acme Corp'),
 (2, 'Globex Inc');
 
--- Channels
 INSERT INTO channels (id, company_id, name, type) VALUES
 (1, 1, 'WhatsApp Support', 'whatsapp'),
 (2, 2, 'Email Support',    'email');
 
--- Users (AI bots + agents)
 INSERT INTO users (id, company_id, name, role) VALUES
 (1, 1, 'AI Assistant', 'ai'),
 (2, 1, 'Alice Agent',  'agent'),
 (3, 2, 'AI Helper',    'ai'),
 (4, 2, 'Bob Agent',    'agent');
 
--- Contacts
 INSERT INTO contacts (id, company_id, name, phone, email) VALUES
 (1, 1, 'Test Contact',   '+15550001122', 'contact@example.com'),
 (2, 2, 'Globex Client',  NULL,           'client@globex.com');
 
--- Conversations (owned by AI initially)
 INSERT INTO conversations (id, company_id, channel_id, contact_id, owner_id) VALUES
 (1, 1, 1, 1, 1),
 (2, 2, 2, 2, 3);
 
--- Messages
 INSERT INTO messages (conversation_id, sender, content) VALUES
--- Acme
 (1, 'contact', 'Hello, I need help!'),
 (1, 'ai',      'Hi! I am your AI assistant. How can I help you today?'),
--- Globex
 (2, 'contact', 'Can I reset my password?'),
 (2, 'ai',      'Hello! Sure, I will help you reset it.');
