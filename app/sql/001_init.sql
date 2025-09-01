@@ -1,15 +1,12 @@
 -- ==========================================================
--- Init SQL for omni-conversationAI
--- Creates database, user, grants, schema, and seed data
+-- First step: granting privileges so app can freely querry in DB 
 -- ==========================================================
 
--- Ensure database exists
 CREATE DATABASE IF NOT EXISTS `sailer`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 USE `sailer`;
 
--- Ensure application user exists
 CREATE USER IF NOT EXISTS 'sailer_user'@'%' IDENTIFIED BY 'sailer_pass';
 ALTER USER 'sailer_user'@'%'
   IDENTIFIED WITH caching_sha2_password BY 'sailer_pass';
